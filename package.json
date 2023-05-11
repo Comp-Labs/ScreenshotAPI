@@ -1,0 +1,26 @@
+{
+  "name": "@techfiddle/screenshot-api",
+  "version": "2023.5.1",
+  "description": "Screenshot API By Tech Fiddle for Internal Use.",
+  "main": "./src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "format": "prettier -w src"  
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Comp-Labs/ScreenshotAPI.git"
+  },
+  "author": "Tech Fiddle <complabs28@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Comp-Labs/ScreenshotAPI/issues"
+  },
+  "homepage": "https://github.com/Comp-Labs/ScreenshotAPI#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^2.0.22",
+    "puppeteer": "^20.1.2"
+  }
+}
