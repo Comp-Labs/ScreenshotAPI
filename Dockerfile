@@ -22,7 +22,7 @@ RUN apt-get update -qq && \
 
 # Install node modules
 COPY --link package.json package-lock.json .
-RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm install
+RUN npm install
 
 # Copy application code
 COPY --link . .
