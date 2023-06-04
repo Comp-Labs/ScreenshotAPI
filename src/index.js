@@ -22,7 +22,8 @@ app.get('/screenshot', async (req, res) => {
       url = `http://${url}`;
     }
 
-    const browser = await getBrowser();
+    const browser = await puppeteer.launch();
+    // getBrowser();
     const page = await browser.newPage();
 
     // Set a custom viewport size
