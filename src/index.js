@@ -1,17 +1,8 @@
 const express = require('express');
 const puppeteer = require('puppeteer');
-const chromium = require('chrome-aws-lambda');
-const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
 const app = express();
 const port = process.env.PORT || 3000;
-
-const getBrowser = () =>
-  IS_PRODUCTION
-    ? // Connect to browserless so we don't run Chrome on the same hardware in production
-      puppeteer.connect({ browserWSEndpoint: 'wss://chrome.browserless.io?token=c9e89be5-5134-485a-a04f-02e6c6d5042a' })
-    : // Run the browser locally while in development
-      puppeteer.launch();
 
 app.get('/screenshot', async (req, res) => {
   try {
@@ -23,8 +14,7 @@ app.get('/screenshot', async (req, res) => {
       url = `http://${url}`;
     }
 
-    const browser = await chromium.puppeteer.launch({headless: "new"});
-    // getBrowser();
+    const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();
 
     // Set a custom viewport size
