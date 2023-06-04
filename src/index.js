@@ -22,7 +22,7 @@ app.get('/screenshot', async (req, res) => {
       url = `http://${url}`;
     }
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({headless: "new"});
     // getBrowser();
     const page = await browser.newPage();
 
