@@ -1,5 +1,5 @@
 const express = require('express');
-const puppeteer = require('puppeteer');
+const createBrowser = require('browserless')({ lossyDeviceName: true });
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -14,18 +14,19 @@ app.get('/screenshot', async (req, res) => {
       url = `http://${url}`;
     }
 
-    const browser = await puppeteer.launch({ headless: "new" });
-    const page = await browser.newPage();
+    const browser = await createBrowser();
+    const browserless = await browser.createContext();
 
     // Set a custom viewport size
-    await page.setViewport({ width: 1920, height: 1080 });
+    // await page.setViewport({ width: 1920, height: 1080 });
 
-    await page.goto(url);
-    const screenshot = await page.screenshot();
+    // await page.goto(url);
+    const screenshot = await browserless.screenshot(url);
 
+    await browserless.destroyContext();
     await browser.close();
 
-    res.set('Content-Type', 'image/png');
+    res.set('Content-Type', 'image/jpg');
     res.send(screenshot);
   } catch (error) {
     console.error(error);
