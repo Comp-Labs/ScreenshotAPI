@@ -1,5 +1,6 @@
 const express = require('express');
 const puppeteer = require('puppeteer');
+const chromium = require('chrome-aws-lambda');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
 const app = express();
@@ -22,7 +23,7 @@ app.get('/screenshot', async (req, res) => {
       url = `http://${url}`;
     }
 
-    const browser = await puppeteer.launch({headless: "new"});
+    const browser = await chromium.puppeteer.launch({headless: "new"});
     // getBrowser();
     const page = await browser.newPage();
 
