@@ -6,7 +6,7 @@ const port = process.env.PORT || 3000;
 
 app.get('/screenshot', async (req, res) => {
   try {
-    let { url } = req.query;
+    const url = req.query.url;
     url = decodeURIComponent(url);
 
     // Prepend "http://" if the URL doesn't start with a protocol
