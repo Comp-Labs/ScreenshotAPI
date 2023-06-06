@@ -23,11 +23,11 @@ app.get('/snap', async (req, res) => {
     // await page.goto(url);
     const screenshot = await browserless.screenshot(url);
 
-    await browserless.destroyContext();
-    await browser.close();
-
     res.set('Content-Type', 'image/jpeg');
     res.send(screenshot);
+
+    await browserless.destroyContext();
+    await browser.close();
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'An error occurred while capturing the screenshot' });
