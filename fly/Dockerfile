@@ -1,5 +1,3 @@
-# syntax = docker/dockerfile:1
-
 FROM zenika/alpine-chrome:with-node
 
 USER root
