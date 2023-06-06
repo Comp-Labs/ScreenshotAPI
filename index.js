@@ -5,6 +5,9 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.get('/snap', async (req, res) => {
+  let browser = null;
+  let browserless = null;
+
   try {
     let url = decodeURIComponent(req.query.url);
 
@@ -13,7 +16,7 @@ app.get('/snap', async (req, res) => {
       url = `http://${url}`;
     }
 
-    const browser = await createBrowser({
+    browser = await createBrowser({
       executablePath: process.env.CHROME_BIN,
       args: [
         // Required for Docker version of Puppeteer
@@ -23,8 +26,8 @@ app.get('/snap', async (req, res) => {
         // because Docker’s default for /dev/shm is 64MB
         '--disable-dev-shm-usage'
       ],
-  });
-    const browserless = await browser.createContext();
+    });
+    browserless = await browser.createContext();
     // const page = await browserless.newPage();
 
     // Set a custom viewport size
@@ -35,12 +38,16 @@ app.get('/snap', async (req, res) => {
 
     res.set('Content-Type', 'image/jpeg');
     res.send(screenshot);
-
-    await browserless.destroyContext();
-    await browser.close();
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'An error occurred while capturing the screenshot' });
+  } finally {
+    if (browserless) {
+      await browserless.destroyContext();
+    }
+    if (browser) {
+      await browser.close();
+    }
   }
 });
 
