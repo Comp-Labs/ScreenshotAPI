@@ -1,5 +1,5 @@
 const express = require('express');
-const createBrowser = require('browserless')({ lossyDeviceName: true });
+const createBrowser = require('browserless');
 
 const app = express();
 const port = process.env.PORT || 3000;
