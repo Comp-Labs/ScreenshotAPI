@@ -7,7 +7,7 @@ export const config = {
 
 export default async function snap(request: VercelRequest, response: VercelResponse) {
     try {
-        let url = decodeURIComponent(request.query.url);
+        let url = decodeURIComponent(`${request.query.url}`);
 
         // Prepend "http://" if the URL doesn't start with a protocol
         if (!/^https?:\/\//i.test(url)) {
