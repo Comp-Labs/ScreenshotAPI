@@ -5,7 +5,7 @@ export const config = {
     runtime: 'edge',
 }
 
-export default async function (request: VercelRequest, response: VercelResponse) {
+export default async function snap(request: VercelRequest, response: VercelResponse) {
     try {
         let url = decodeURIComponent(request.query.url);
 
