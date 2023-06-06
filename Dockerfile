@@ -2,7 +2,7 @@ FROM zenika/alpine-chrome:with-node
 
 USER root
 ENV NODE_ENV=production
-WORKDIR /src
+WORKDIR /
 
 COPY package*.json ./
 RUN npm install
