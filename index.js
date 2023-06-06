@@ -4,12 +4,22 @@ const createBrowser = require('browserless');
 const app = express();
 const port = process.env.PORT || 3000;
 
+const cache = {};
+
 app.get('/snap', async (req, res) => {
   let browser = null;
   let browserless = null;
 
   try {
     let url = decodeURIComponent(req.query.url);
+
+ // Check if the screenshot is already cached
+ if (cache[url]) {
+  console.log('Serving from cache:', url);
+  res.set('Content-Type', 'image/jpeg');
+  res.send(cache[url]);
+  return;
+}
 
     // Prepend "http://" if the URL doesn't start with a protocol
     if (!/^https?:\/\//i.test(url)) {
@@ -35,6 +45,8 @@ app.get('/snap', async (req, res) => {
 
     // await page.goto(url);
     const screenshot = await browserless.screenshot(url);
+
+    cache[url] = screenshot;
 
     res.set('Content-Type', 'image/jpeg');
     res.send(screenshot);
