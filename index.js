@@ -1,5 +1,5 @@
-const express = require('express');
-const createBrowser = require('browserless');
+import express from 'express',
+import createBrowser from 'browserless',
 
 const app = express();
 const port = process.env.PORT || 3000;
