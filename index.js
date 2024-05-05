@@ -1,5 +1,5 @@
-import express from 'express';
-import puppeteer from 'puppeteer';
+const express = require('express');
+const puppeteer = require('puppeteer-core');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -13,13 +13,13 @@ app.get('/snap', async (req, res) => {
   try {
     let url = decodeURIComponent(req.query.url);
 
-  // Check if the screenshot is already cached
- if (cache[url]) {
-  console.log('Serving from cache:', url);
-  res.set('Content-Type', 'image/jpeg');
-  res.send(cache[url]);
-  return;
-}
+    // Check if the screenshot is already cached
+    if (cache[url]) {
+      console.log('Serving from cache:', url);
+      res.set('Content-Type', 'image/jpeg');
+      res.send(cache[url]);
+      return;
+    }
 
     // Prepend "http://" if the URL doesn't start with a protocol
     if (!/^https?:\/\//i.test(url)) {
