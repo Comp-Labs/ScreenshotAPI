@@ -1,62 +1,106 @@
-const express = require('express');
-const puppeteer = require('puppeteer-core');
+const express = require('express')
+const puppeteer = require('puppeteer-core')
+const { executablePath } = require('puppeteer')
 
-const app = express();
-const port = process.env.PORT || 3000;
+const app = express()
+const port = process.env.PORT || 3000
+const cache = {}
 
-const cache = {};
+app.get('/', async (request, response) => {
+	let browser = null
+	let page = null
+	try {
+		let url = decodeURIComponent(request.query.url)
+		// Check if the screenshot is already cached
+		if (cache[url]) {
+			console.log('Serving from cache:', url)
+			response.set('Content-Type', 'image/jpeg')
+			response.send(cache[url])
+			return
+		}
 
-app.get('/snap', async (req, res) => {
-  let browser = null;
-  let page = null;
+		// Prepend "http://" if the URL doesn't start with a protocol
+		if (!(/^https?:\/\//i).test(url)) {
+			url = `http://` + url
+		}
+		browser = await puppeteer.launch({
+			args: [ '--no-sandbox' ],
+			executablePath: executablePath()
+		})
 
-  try {
-    let url = decodeURIComponent(req.query.url);
+		page = await browser.newPage()
 
-    // Check if the screenshot is already cached
-    if (cache[url]) {
-      console.log('Serving from cache:', url);
-      res.set('Content-Type', 'image/jpeg');
-      res.send(cache[url]);
-      return;
-    }
+		// Set a custom viewport size
+		await page.setViewport({ width: 1024, height: 768 })
 
-    // Prepend "http://" if the URL doesn't start with a protocol
-    if (!/^https?:\/\//i.test(url)) {
-      url = `http://${url}`;
-    }
+		await page.goto(url, { waitUntil: 'networkidle0' })
+		const snap = await page.screenshot()
+		cache[url] = snap
+		await browser.close()
+		response.set('Content-Type', 'image/jpeg')
+		response.send(snap)
+	} catch (error) {
+		console.log(error)
+		response
+			.status(500)
+			.json({ error: 'An error occurred while capturing the screenshot' })
+	}
+})
 
-    browser = await puppeteer.launch();
-    page = await browser.newPage();
+app.get('/pdf', async (request, response) => {
+	let browser = null
+	let page = null
+	try {
+		if (request.method !== 'GET') return response.status(405).end()
+		let url = decodeURIComponent(request.query.url)
+		// Check if the pdf is already cached
+		if (cache[url]) {
+			console.log('Serving from cache:', url)
+			response.set('Content-Type', 'application/pdf')
+			response.send(cache[url])
+			return
+		}
 
-    // Set a custom viewport size
-    await page.setViewport({ width: 1920, height: 1080 });
+		// Prepend "http://" if the URL doesn't start with a protocol
+		if (!(/^https?:\/\//i).test(url)) {
+			url = `http://` + url
+		}
 
-    // Go to the URL
-    await page.goto(url);
+		// Strip leading slash from request path
+		// const url = request.url.replace(/^\/+/, '')
 
-    // Take a screenshot
-    const screenshot = await page.screenshot({
-      path: 'screenshot.png',
-    });
+		browser = await puppeteer.launch({
+			args: [ '--no-sandbox' ],
+			executablePath: executablePath()
+		})
 
-    cache[url] = screenshot;
+		page = await browser.newPage()
 
-    res.set('Content-Type', 'image/jpeg');
-    res.send(screenshot);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'An error occurred while capturing the screenshot' });
-  } finally {
-    if (page) {
-      await page.close();
-    }
-    if (browser) {
-      await browser.close();
-    }
-  }
-});
+		// Block favicon.ico requests from reaching puppeteer
+		if (url === 'favicon.ico') return response.status(404).end()
+		await page.goto(url, { waitUntil: 'networkidle0' })
+		console.log(`Converting: ` + url)
+		const pdfBuffer = await page.pdf({ format: 'A4' })
+		cache[url] = pdfBuffer
+
+		if (!pdfBuffer) return response.status(400).send('Error: Could not generate PDF')
+
+		// Instruct browser to cache PDF for maxAge ms
+		if (process.env.NODE_ENV !== 'development') response.setHeader('Cache-control', `public, max-age=1000`)
+		await browser.close()
+		// Set Content type to PDF and send the PDF to the client
+		response.setHeader('Content-type', 'application/pdf')
+		response.send(pdfBuffer)
+
+	} catch (err) {
+		if (err.message === 'Protocol error (Page.navigate): Cannot navigate to invalid URL')
+			return response.status(404).end()
+
+		console.error(err)
+		response.status(500).send('Error: Please try again.')
+	}
+})
 
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+	console.log('Snapper is listening on port ' + port)
+})

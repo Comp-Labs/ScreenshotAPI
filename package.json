@@ -1,9 +1,9 @@
 {
-  "name": "@techfiddle/screenshot-api",
-  "version": "2023.6.1",
+  "name": "@techfiddle/snapper",
+  "version": "2024.6.1",
   "description": "Screenshot API By Tech Fiddle for Internal Use.",
   "scripts": {
-    "start": "node ./api/index.js",
+    "start": "node ./api/index.ts",
     "lint": "eslint --ignore-path .gitignore . --ext .js",
     "develop": "vercel dev",
     "deploy": "vercel deploy --prod",
@@ -20,21 +20,21 @@
   },
   "homepage": "https://github.com/Comp-Labs/ScreenshotAPI#readme",
   "dependencies": {
-    "@types/node": "20.2.5",
-    "@types/react": "18.2.8",
-    "@types/react-dom": "18.2.4",
-      
-    "express": "^4.18.2",
+    "@types/node": "20.14.2",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "express": "^4.19.2",
     "lodash": "^4.17.21",
-    "puppeteer": "^10.4.0",
-    "puppeteer-core": "^10.4.0",
-    "puppeteer-extra": "^3.3.6",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "puppeteer": "^22.11.0",
+    "puppeteer-core": "^22.11.0",
+    "react": "18.3.0",
+    "react-dom": "18.3.0"
   },
   "devDependencies": {
     "@betahuhn/eslint-config-node": "^0.1.1",
     "eslint": "^7.32.0",
+    "typescript": "^5.4.5",
     "vercel": "^30.2.3"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
