@@ -3,10 +3,8 @@
   "version": "2024.6.1",
   "description": "Screenshot API By Tech Fiddle for Internal Use.",
   "scripts": {
-    "start": "node ./api/index.ts",
+    "start": "node ./index.js",
     "lint": "eslint --ignore-path .gitignore . --ext .js",
-    "develop": "vercel dev",
-    "deploy": "vercel deploy --prod",
     "format": "prettier -w src"
   },
   "repository": {
