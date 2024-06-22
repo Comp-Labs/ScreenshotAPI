@@ -45,14 +45,18 @@ app.get('/', async (request, response) => {
 		await page.goto(url, { waitUntil: 'networkidle0' })
 		const snap = await page.screenshot()
 		cache[url] = snap
-		await browser.close()
 		response.set('Content-Type', 'image/jpeg')
 		response.send(snap)
 	} catch (error) {
+		if (error.message === 'Protocol error (Page.navigate): Cannot navigate to invalid URL')
+			return response.status(404).end()
 		console.log(error)
 		response
 			.status(500)
 			.json({ error: 'An error occurred while capturing the screenshot' })
+	} finally {
+		await page.close()
+		await browser.close()
 	}
 })
 
@@ -104,17 +108,19 @@ app.get('/pdf', async (request, response) => {
 
 		// Instruct browser to cache PDF for maxAge ms
 		if (process.env.NODE_ENV !== 'development') response.setHeader('Cache-control', `public, max-age=1000`)
-		await browser.close()
 		// Set Content type to PDF and send the PDF to the client
 		response.setHeader('Content-type', 'application/pdf')
 		response.send(pdfBuffer)
 
-	} catch (err) {
-		if (err.message === 'Protocol error (Page.navigate): Cannot navigate to invalid URL')
+	} catch (error) {
+		if (error.message === 'Protocol error (Page.navigate): Cannot navigate to invalid URL')
 			return response.status(404).end()
 
-		console.error(err)
+		console.error(error)
 		response.status(500).send('Error: Please try again.')
+	} finally {
+		await page.close()
+		await browser.close()
 	}
 })
 
