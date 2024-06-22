@@ -7,5 +7,5 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 COPY . .
-CMD ["node", "index.js"]
+CMD ["npm", "run", "start"]
 EXPOSE 10000
