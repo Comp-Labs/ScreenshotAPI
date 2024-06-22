@@ -8,4 +8,4 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 COPY . .
 CMD ["npm", "run", "start"]
-EXPOSE 10000
+EXPOSE 10000 80 443
