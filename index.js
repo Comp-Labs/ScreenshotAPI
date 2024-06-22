@@ -1,6 +1,7 @@
 const express = require('express')
 const puppeteer = require('puppeteer-core')
 const { executablePath } = require('puppeteer')
+require('dotenv').config()
 
 const app = express()
 const port = process.env.PORT || 3000
