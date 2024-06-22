@@ -79,8 +79,16 @@ app.get('/pdf', async (request, response) => {
 		// const url = request.url.replace(/^\/+/, '')
 
 		browser = await puppeteer.launch({
-			args: ['--no-sandbox'],
-			executablePath: executablePath()
+			args: [
+				'--disable-setuid-sandbox',
+				'--no-sandbox',
+				'--single-process',
+				'--no-zygote'
+			],
+			executablePath:
+				process.env.NODE_ENV === 'production' ?
+					process.env.PUPPETEER_EXECUTABLE_PATH :
+					executablePath()
 		})
 
 		page = await browser.newPage()
