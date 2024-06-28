@@ -69,7 +69,8 @@ app.get('/pdf', async (request, response) => {
 	let page = null
 	try {
 		if (request.method !== 'GET') return response.status(405).end()
-		let url = decodeURIComponent(request.query.url)
+		// Strip leading slash from request path
+		let url = decodeURIComponent(request.query.url.replace(/^\/+/, ''))
 		// Check if the pdf is already cached
 		if (cache[url]) {
 			console.log('Serving from cache:', url)
@@ -82,9 +83,6 @@ app.get('/pdf', async (request, response) => {
 		if (!(/^https?:\/\//i).test(url)) {
 			url = `http://` + url
 		}
-
-		// Strip leading slash from request path
-		// const url = request.url.replace(/^\/+/, '')
 
 		browser = await puppeteer.launch({
 			args: [
