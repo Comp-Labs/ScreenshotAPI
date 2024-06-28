@@ -7,7 +7,11 @@ const app = express()
 const port = process.env.PORT || 10000
 const cache = {}
 
-app.get('/', async (request, response) => {
+app.get('/', function(response) {
+	response.render('home.html')
+})
+
+app.get('/snap', async (request, response) => {
 	let browser = null
 	let page = null
 	try {
