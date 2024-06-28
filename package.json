@@ -3,7 +3,7 @@
   "version": "2024.6.1",
   "description": "Screenshot API By Tech Fiddle for Internal Use.",
   "scripts": {
-    "start": "npm install && node index.js",
+    "start": "node index.js",
     "lint": "eslint --ignore-path .gitignore . --ext .js",
     "format": "prettier -w src"
   },
