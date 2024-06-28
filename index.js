@@ -7,18 +7,18 @@ const app = express()
 const port = process.env.PORT || 10000
 const cache = {}
 
-app.get('/', async (request, response) => {
-	try {
-		response.render('home.html')
-	} catch (error) {
-		if (error.message === 'Protocol error (Page.navigate): Cannot navigate to invalid URL')
-			return response.status(404).end()
-		console.log(error)
-		response
-			.status(500)
-			.json({ error: 'An error occurred while capturing the screenshot' })
-	}
-})
+// app.get('/', async (request, response) => {
+// 	try {
+// 		response.render('home.html')
+// 	} catch (error) {
+// 		if (error.message === 'Protocol error (Page.navigate): Cannot navigate to invalid URL')
+// 			return response.status(404).end()
+// 		console.log(error)
+// 		response
+// 			.status(500)
+// 			.json({ error: 'An error occurred while capturing the screenshot' })
+// 	}
+// })
 
 app.get('/snap', async (request, response) => {
 	let browser = null
