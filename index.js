@@ -31,9 +31,10 @@ app.get('/', async (request, response) => {
 				'--single-process',
 				'--no-zygote'
 			],
+			// execPath: process.env.PUPPETEER_EXECUTABLE_PATH
 			executablePath:
 				process.env.NODE_ENV === 'production' ?
-					process.env.PUPPETEER_EXECUTABLE_PATH :
+					executablePath() :
 					executablePath()
 		})
 
@@ -89,9 +90,10 @@ app.get('/pdf', async (request, response) => {
 				'--single-process',
 				'--no-zygote'
 			],
+			// execPath: process.env.PUPPETEER_EXECUTABLE_PATH
 			executablePath:
 				process.env.NODE_ENV === 'production' ?
-					process.env.PUPPETEER_EXECUTABLE_PATH :
+					executablePath() :
 					executablePath()
 		})
 
