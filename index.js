@@ -7,14 +7,24 @@ const app = express()
 const port = process.env.PORT || 10000
 const cache = {}
 
-app.get('/', function(response) {
-	response.render('home.html')
+app.get('/', async (response) => {
+	try {
+		response.render('home.html')
+	} catch (error) {
+		if (error.message === 'Protocol error (Page.navigate): Cannot navigate to invalid URL')
+			return response.status(404).end()
+		console.log(error)
+		response
+			.status(500)
+			.json({ error: 'An error occurred while capturing the screenshot' })
+	}
 })
 
 app.get('/snap', async (request, response) => {
 	let browser = null
 	let page = null
 	try {
+		console.log('Performance Check: Job Started')
 		let url = decodeURIComponent(request.query.url)
 		// Check if the screenshot is already cached
 		if (cache[url]) {
@@ -61,6 +71,7 @@ app.get('/snap', async (request, response) => {
 	} finally {
 		await page.close()
 		await browser.close()
+		console.log('Performance Check: Job Ended')
 	}
 })
 
@@ -68,6 +79,7 @@ app.get('/pdf', async (request, response) => {
 	let browser = null
 	let page = null
 	try {
+		console.log('Performance Check: Job Started')
 		if (request.method !== 'GET') return response.status(405).end()
 		// Strip leading slash from request path
 		let url = decodeURIComponent(request.query.url.replace(/^\/+/, ''))
@@ -123,6 +135,7 @@ app.get('/pdf', async (request, response) => {
 	} finally {
 		await page.close()
 		await browser.close()
+		console.log('Performance Check: Job Ended')
 	}
 })
 
