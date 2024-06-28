@@ -7,7 +7,7 @@ const app = express()
 const port = process.env.PORT || 10000
 const cache = {}
 
-app.get('/', async (response) => {
+app.get('/', async (request, response) => {
 	try {
 		response.render('home.html')
 	} catch (error) {
